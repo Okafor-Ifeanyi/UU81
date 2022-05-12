@@ -1,9 +1,12 @@
 from fastapi import FastAPI, Request
 from typing import List
 from .routers import event, user, auth, booking, payment
+from .config import Settings
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+
+settings = Settings()
 # models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
