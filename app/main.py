@@ -4,8 +4,6 @@ from .routers import event, user, auth, booking, payment
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
-
 # models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
