@@ -1,5 +1,3 @@
-from time import sleep
-from turtle import delay
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from starlette.responses import JSONResponse
@@ -9,7 +7,6 @@ from sqlalchemy.orm import Session
 from .. import schemas, models, utils, oauth2
 from ..config import settings
 from ..database import get_db
-import asyncio
 
 router = APIRouter(
     tags=["Authentication"]
@@ -62,7 +59,7 @@ async def send_reset_email(user) -> JSONResponse:
         )
     fm = FastMail(conf)
     print(conf.MAIL_FROM, conf.MAIL_PASSWORD)
-    await asyncio.sleep(fm.send_message(message))
+    await fm.send_message(message)
     
     return JSONResponse(status_code=200, content={"message": "email has been sent"}) 
    
