@@ -1,5 +1,3 @@
-from pyexpat import model
-import re
 from fastapi import APIRouter, Response, status, HTTPException, Depends
 from .. import models, schemas, oauth2
 from sqlalchemy.orm import Session
@@ -99,6 +97,10 @@ def delete_event(id: int, db: Session = Depends(get_db), current_user: str = Dep
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                              detail = f"Event with id: {id} was not found")
 
+    if deleted.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
+        detail="Not authorized to perform requested action")
+
     deleted_event_query.delete(synchronize_session=False)
     db.commit()
         
@@ -122,6 +124,10 @@ def update_event(id: int, event: schemas.EventCreate , db: Session = Depends(get
     if updated_event == None :
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                     detail = f"Event with id: {id} was not found")
+
+    if updated_event.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
+        detail="Not authorized to perform requested action")
 
     event_query.update(event.dict(), synchronize_session=False)
 

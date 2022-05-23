@@ -1,9 +1,11 @@
 from sqlalchemy import TIMESTAMP, Column, Float, Integer, String, Boolean, ForeignKey
+from itsdangerous import TimedSerializer as Serializer
 from sqlalchemy_utils import EmailType
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy.orm import relationship
 from .database import Base
+from .config import settings
 from .paystack import PayStack
 import secrets
 
@@ -38,8 +40,22 @@ class User(Base):
     created_at = Column(TIMESTAMP(timezone=True), 
                     nullable=False, server_default=text('now()'))
     phone_number = Column(Integer, nullable=False)
-    admin = Column(Boolean, server_default='FALSE', nullable=False)
+    admin = Column(Boolean, nullable=False)
     is_host = Column(Boolean, server_default='FALSE', nullable=False)
+
+    def get_acces_token(self, expires_sec=1800):
+        s = Serializer(settings.secret_key, expires_sec)
+        return s.dumps({'user_id': self.id}).decode('utf-8')
+    
+    @staticmethod
+    def verify_reset_token(token):
+        s = Serializer(settings.secret_key)
+        try:
+            user_id = s.loads(token)['user_id']
+        except:
+            return None
+        
+        return User.query.get(user_id)
 
 class Payment(Base): 
     __tablename__ = "payments"
@@ -94,6 +110,9 @@ class Booking(Base):
     user_id = Column(Integer, ForeignKey(
         "users.id", ondelete="CASCADE"), nullable=False)
     user = relationship("User")
+    created_at = Column(TIMESTAMP(timezone=True),
+                    nullable=False, server_default=text('now()'))
+
     
     # title = Column(String, nullable=False)
     # place_id = Column(Integer, ForeignKey("places.id", ondelete="CASCADE"), nullable=False)

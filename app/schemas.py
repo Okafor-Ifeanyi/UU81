@@ -1,5 +1,4 @@
-from dataclasses import fields
-from typing import Optional
+from typing import Optional, List
 from unittest.mock import Base
 from pydantic import BaseModel, EmailStr
 from datetime import datetime, date
@@ -25,11 +24,14 @@ class UserOut(BaseModel):
     email: EmailStr
     phone_number: int
     created_at: datetime
+    admin: bool = False
+    is_host: bool = False
+    
 
     class Config:
         orm_mode = True
 
-class EventResponse(BaseModel):
+class EventResponse(EventBase):
     id: int
     created_at: datetime
     owner_id: int
@@ -47,7 +49,8 @@ class EventOut(BaseModel):
 
 class BookingResponse(BaseModel):
     id: int
-    event: EventOut
+    created_at: datetime
+    event: EventResponse
     user: UserOut
 
     class Config:
@@ -79,6 +82,16 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
+class RequestReset(BaseModel):
+    email: EmailStr
+
+class EmailSchema(BaseModel):
+    email: List[EmailStr]
+
+class ResetPassword(BaseModel):
+    password: str
+    confirm_password: str
+
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -87,6 +100,8 @@ class TokenData(BaseModel):
     id: Optional[str] = None
     admin: Optional[bool] = None
 
+class TokenReset(Token):
+    message: str
 
 class Booking(BaseModel):
     event_id: int = None
