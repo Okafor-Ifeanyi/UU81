@@ -32,7 +32,7 @@ def root():
     return {"message": "I have added the new routers as I said today 23rd 10pm!"} 
 
 @app.exception_handler(Exception)
-async def exception_handler(request: Request, exc: Exception):
+async def exception_handler(request: Request, exc: Exception): 
     error_message = f"Unexpected error occurred: {exc}"
     return JSONResponse(status_code=500, content={"detail": error_message})
 
