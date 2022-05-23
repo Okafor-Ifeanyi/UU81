@@ -29,7 +29,7 @@ app.include_router(payment.router)
 
 @app.get("/")
 def root():
-    return {"message": "Abeg where my docs de!!"} 
+    return {"message": "I have added the new routers as I said today 23rd 10pm!"} 
 
 @app.exception_handler(Exception)
 async def exception_handler(request: Request, exc: Exception):
