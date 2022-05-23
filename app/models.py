@@ -109,7 +109,7 @@ class Booking(Base):
     event = relationship("Event")
     user_id = Column(Integer, ForeignKey(
         "users.id", ondelete="CASCADE"), nullable=False)
-    user = relationship("User")
+    user = relationship("User") 
     created_at = Column(TIMESTAMP(timezone=True),
                     nullable=False, server_default=text('now()'))
 
