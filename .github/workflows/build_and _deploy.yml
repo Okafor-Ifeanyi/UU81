@@ -22,7 +22,7 @@ jobs:
       MAIL_TLS: ${{secrets.MAIL_TLS}}
       MAIL_SSL: ${{secrets.MAIL_SSL}}
       USE_CREDENTIALS: ${{secrets.USE_CREDENTIALS}}
-      VALIDATE_CERTS: ${{secrets.VALIDATE_CERTS}}
+      VALIDATE_CERTS: True
 
     services:
       postgres:
