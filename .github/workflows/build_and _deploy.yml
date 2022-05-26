@@ -16,11 +16,11 @@ jobs:
       PAYSTACK_SECRET_KEY: ${{secrets.PAYSTACK_SECRET_KEY}}
       MAIL_USERNAME: ${{secrets.MAIL_USERNAME}}
       MAIL_PASSWORD: ${{secrets.MAIL_PASSWORD}}
-      MAIL_FROM: ${{secrets.MAIL_FROM}}
+      MAIL_FROM: progbio.eth@gmail.com
       MAIL_PORT: ${{secrets.MAIL_PORT}}
       MAIL_SERVER: ${{secrets.MAIL_SERVER}}
-      MAIL_TLS: ${{secrets.MAIL_TLS}}
-      MAIL_SSL: ${{secrets.MAIL_SSL}}
+      MAIL_TLS: True
+      MAIL_SSL: False
       USE_CREDENTIALS: True
       VALIDATE_CERTS: True
 
