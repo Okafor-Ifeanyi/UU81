@@ -24,20 +24,19 @@ limit: int = 10, skip: int = 0, search: Optional[str]=""):
     return events
 
 @router.get("/all", response_model= List[schemas.EventOut])
-def get_all_events(db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user),
-limit: int = 10, skip: int = 0, search: Optional[str]=""):
-
-    print(current_user)
+def get_all_events(db: Session = Depends(get_db), limit: int = 10, skip: int = 0, search: Optional[str]=""):
     
     events = db.query(models.Event, func.count(models.Booking.event_id).label("Booking")).join( 
         models.Booking, models.Booking.event_id == models.Event.id, isouter=True).group_by(
         models.Event.id).filter(models.Event.title.contains(search)).limit(limit).offset(skip).all()
 
-    if current_user.admin == True:
-        return events
-    else:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail = f"User with email: {current_user.email} is not an Admin")
+    # if current_user.admin == True:
+    #     return events
+    # else:
+    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+    #                 detail = f"User with email: {current_user.email} is not an Admin")
+    
+    return events
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model= schemas.EventResponse)
 def create_event(event: schemas.EventCreate , db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user)):
