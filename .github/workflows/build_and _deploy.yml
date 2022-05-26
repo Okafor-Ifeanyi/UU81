@@ -21,7 +21,7 @@ jobs:
       MAIL_SERVER: ${{secrets.MAIL_SERVER}}
       MAIL_TLS: ${{secrets.MAIL_TLS}}
       MAIL_SSL: ${{secrets.MAIL_SSL}}
-      USE_CREDENTIALS: ${{secrets.USE_CREDENTIALS}}
+      USE_CREDENTIALS: True
       VALIDATE_CERTS: True
 
     services:
