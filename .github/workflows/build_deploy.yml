@@ -2,7 +2,6 @@ name: Build and Deploy Code
 
 on: [push, pull_request]
 
-
 jobs:
   job1:
     environment:
@@ -11,7 +10,7 @@ jobs:
       DATABASE_HOSTNAME: ${{secrets.DATABASE_HOSTNAME}}
       DATABASE_PORT: ${{secrets.DATABASE_PORT}}
       DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
-      DATABASE_NAME: UU81
+      DATABASE_NAME: ${{secrets.DATABASE_NAME}}
       DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
       SECRET_KEY: ${{secrets.DATABASE_SECRET_KEY}}
       ALGORITHM: ${{secrets.DATABASE_ALGORITHM}}
