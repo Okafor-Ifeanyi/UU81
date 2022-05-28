@@ -8,7 +8,7 @@ jobs:
       name: uu81_fastapi
     env:
       DATABASE_HOSTNAME: localhost
-      DATABASE_PORT: 5432
+      DATABASE_PORT: 5433
       DATABASE_PASSWORD: Ifeanyi058
       DATABASE_NAME: UU81
       DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
