@@ -10,7 +10,7 @@ jobs:
       DATABASE_HOSTNAME: ${{secrets.DATABASE_HOSTNAME}}
       DATABASE_PORT: ${{secrets.DATABASE_PORT}}
       DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
-      DATABASE_NAME: ${{secrets.DATABASE_NAME}}
+      DATABASE_NAME: UU81
       DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
       SECRET_KEY: ${{secrets.DATABASE_SECRET_KEY}}
       ALGORITHM: ${{secrets.DATABASE_ALGORITHM}}
@@ -30,7 +30,7 @@ jobs:
       postgres:
         image: postgres
         env:
-          # POSTGRES_PASSWORD: ${{secrets.DATABASE_HOSTNAME}}
+          POSTGRES_PASSWORD: ${{secrets.DATABASE_HOSTNAME}}
           POSTGRES_DB: ${{secrets.DATABASE_NAME}}_test
         ports:
           - 5432:5432
