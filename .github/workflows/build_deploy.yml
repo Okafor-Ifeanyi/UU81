@@ -4,25 +4,27 @@ on: [push, pull_request]
 
 jobs:
   job1:
+    environment:
+      name: testing_uu81
     env:
-      DATABASE_HOSTNAME: localhost
-      DATABASE_PORT: 5432
-      DATABASE_PASSWORD: Ifeanyi058
-      DATABASE_NAME: UU81
-      DATABASE_USERNAME: postgres
-      SECRET_KEY: 91e4626bb547fe049c7430b0d5feef13755d69b282efa970b98c146e06f7f044
-      ALGORITHM: HS256
-      ACCESS_TOKEN_EXPIRE_MINUTES: 30
-      PAYSTACK_SECRET_KEY: 31a827d317649d69cc078065f934e4e38be4e14c2f3b33e65966dac985bdb889
-      MAIL_USERNAME: zeusifeanyi058@gmail.com
-      MAIL_PASSWORD: Bio_international
-      MAIL_FROM: zeusifeanyi058@gmail.com
-      MAIL_PORT: 587
-      MAIL_SERVER: smtp.gmail.com
-      MAIL_TLS: True
-      MAIL_SSL: False
-      USE_CREDENTIALS: True
-      VALIDATE_CERTS: True
+      DATABASE_HOSTNAME: ${{secrets.DATABASE_HOSTNAME}}
+      DATABASE_PORT: ${{secrets.DATABASE_PORT}}
+      DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+      DATABASE_NAME: ${{secrets.DATABASE_NAME}}
+      DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
+      SECRET_KEY: ${{secrets.DATABASE_SECRET_KEY}}
+      ALGORITHM: ${{secrets.DATABASE_ALGORITHM}}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
+      PAYSTACK_SECRET_KEY: ${{secrets.DATABASE_PAYSTACK_SECRET_KEY}}
+      MAIL_USERNAME: ${{secrets.MAIL_USERNAME}}
+      MAIL_PASSWORD: ${{secrets.MAIL_PASSWORD}}
+      MAIL_FROM: ${{secrets.MAIL_FROM}}
+      MAIL_PORT: ${{secrets.MAIL_PORT}}
+      MAIL_SERVER: ${{secrets.MAIL_SERVER}}
+      MAIL_TLS: ${{secrets.MAIL_TLS}}
+      MAIL_SSL: ${{secrets.MAIL_SSL}}
+      USE_CREDENTIALS: ${{secrets.USE_CREDENTIALS}}
+      VALIDATE_CERTS: ${{secrets.VALIDATE_CERTS}}
 
     runs-on: ubuntu-latest
     steps:
