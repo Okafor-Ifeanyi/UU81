@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Response, status, HTTPException, Depends
-from .. import models, schemas, utils
+from .. import models, schemas, utils, oauth2
 from sqlalchemy.orm import Session
 from ..database import get_db
 
@@ -25,7 +25,7 @@ def create_user(user: schemas.UserCreate , db: Session = Depends(get_db)):
 
 
 @router.get("/{id}", response_model=schemas.UserOut)
-def get_user(id: int, db: Session = Depends(get_db)):
+def get_user(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:
          raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -35,7 +35,7 @@ def get_user(id: int, db: Session = Depends(get_db)):
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_user(id:int, db: Session = Depends(get_db)):
+def delete_user(id:int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
     deleted_user_query = db.query(models.User).filter(models.User.id == id)
 
@@ -43,7 +43,7 @@ def delete_user(id:int, db: Session = Depends(get_db)):
     if deleted == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail= f"User with id: {id} was not found")
-    if models.User.admin == True:
+    if current_user.admin == True or id != current_user.id:
         deleted_user_query.delete(synchronize_session=False)
         db.commit()
     else:
@@ -54,7 +54,8 @@ def delete_user(id:int, db: Session = Depends(get_db)):
 
 
 @router.put("/{id}", response_model=schemas.UserOut)
-def update_user(id:int, user: schemas.UserCreate , db: Session = Depends(get_db)):
+def update_user(id:int, user: schemas.UserCreate , db: Session = Depends(get_db),
+current_user: int = Depends(oauth2.get_current_user)):
     user_query = db.query(models.User).filter(models.User.id == id)
     updated_user = user_query.first()
 
@@ -62,7 +63,7 @@ def update_user(id:int, user: schemas.UserCreate , db: Session = Depends(get_db)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                     detail = f"User with id: {id} was not found")
 
-    if models.User.admin == True:
+    if current_user.admin == True or id != current_user.id:
         user_query.update(user.dict(), synchronize_session=False)
         db.commit()
     else:
