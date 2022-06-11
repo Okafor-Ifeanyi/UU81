@@ -17,6 +17,7 @@ class EventBase(BaseModel):
     cost: float = 00.00
 
 class EventCreate(EventBase):
+    image_url: Optional[str] = None
     pass
 
 class UserOut(BaseModel):
@@ -34,6 +35,7 @@ class UserOut(BaseModel):
 class EventResponse(EventBase):
     id: int
     created_at: datetime
+    image_url: Optional[str] = None
     owner_id: int
     owner: UserOut
        
