@@ -9,6 +9,7 @@ from app.models import Payment
 class EventBase(BaseModel):
     title: str
     content: str
+    image_url: Optional[str] = None
     status: bool = True
     space_allowed: int = 50
     space_available: int = 50 #space_allowed - len(BookingBase.space)
@@ -17,7 +18,6 @@ class EventBase(BaseModel):
     cost: float = 00.00
 
 class EventCreate(EventBase):
-    image_url: Optional[str] = None
     pass
 
 class UserOut(BaseModel):
@@ -35,7 +35,6 @@ class UserOut(BaseModel):
 class EventResponse(EventBase):
     id: int
     created_at: datetime
-    image_url: Optional[str] = None
     owner_id: int
     owner: UserOut
        
@@ -43,6 +42,7 @@ class EventResponse(EventBase):
         orm_mode = True
 
 class EventOut(BaseModel):
+    image_url: Optional[str] = None
     Event: EventResponse
     Booking: int
 
