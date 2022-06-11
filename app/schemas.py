@@ -9,7 +9,7 @@ from app.models import Payment
 class EventBase(BaseModel):
     title: str
     content: str
-    image_url: Optional[str] = None
+    image_url: Optional[str] = None 
     status: bool = True
     space_allowed: int = 50
     space_available: int = 50 #space_allowed - len(BookingBase.space)
