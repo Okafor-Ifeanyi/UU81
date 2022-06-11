@@ -15,7 +15,7 @@ class EventBase(BaseModel):
     space_available: int = 50 #space_allowed - len(BookingBase.space)
     # start_date: date = 2022/6/5
     # end_date: date = 2022/6/15
-    cost: float = 00.00
+    cost: float = 00.00 
 
 class EventCreate(EventBase):
     pass
