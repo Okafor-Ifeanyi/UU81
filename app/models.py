@@ -1,6 +1,6 @@
 from sqlalchemy import TIMESTAMP, Column, Float, Integer, String, Boolean, ForeignKey
 from itsdangerous import TimedSerializer as Serializer
-from sqlalchemy_utils import EmailType
+from sqlalchemy_utils import EmailType, URLType
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy.orm import relationship
@@ -16,6 +16,7 @@ class Event(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
+    image_url = Column(URLType, nullable=True)
     space_allowed = Column(Integer, nullable=False)
     space_available = Column(Integer, nullable=False)
     cost = Column(Float, nullable=False)
