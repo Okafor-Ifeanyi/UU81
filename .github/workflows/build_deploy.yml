@@ -26,6 +26,9 @@ jobs:
       MAIL_SSL: ${{secrets.MAIL_SSL}}
       USE_CREDENTIALS: ${{secrets.USE_CREDENTIALS}}
       VALIDATE_CERTS: ${{secrets.VALIDATE_CERTS}}
+      CLOUD_NAME: ${{secrets.CLOUD_NAME}}
+      CLOUDINARY_API_KEY: ${{secrets.CLOUDINARY_API_KEY}}
+      CLOUDINARY_API_SECRET: ${{secrets.CLOUDINARY_API_SECRET}}
 
     services:
       postgres:
