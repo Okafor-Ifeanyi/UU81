@@ -1,10 +1,10 @@
 from typing import Optional, List
-from unittest.mock import Base
 from pydantic import BaseModel, EmailStr
-from datetime import datetime, date
+from datetime import datetime
+from .decorators import as_form
 from pydantic.types import conint
-
 from app.models import Payment
+
 
 class EventBase(BaseModel):
     title: str
@@ -17,8 +17,21 @@ class EventBase(BaseModel):
     # end_date: date = 2022/6/15
     cost: float = 00.00 
 
-class EventCreate(EventBase):
-    pass
+@as_form
+class EventCreate(BaseModel):
+    title: str
+    content: str
+    image_url: Optional[str]
+    status: bool = True
+    space_allowed: int = 50
+    space_available: int = 50
+    cost: float = 00.00 
+
+@as_form
+class EventUpdate(BaseModel):
+    title: str
+    content: str
+    image_url: Optional[str]
 
 class UserOut(BaseModel):
     id: int
@@ -42,7 +55,6 @@ class EventResponse(EventBase):
         orm_mode = True
 
 class EventOut(BaseModel):
-    image_url: Optional[str] = None
     Event: EventResponse
     Booking: int
 

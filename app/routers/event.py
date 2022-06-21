@@ -1,17 +1,21 @@
-from fastapi import APIRouter, Response, status, HTTPException, Depends
+from fastapi import APIRouter, Response, status, HTTPException,UploadFile
+from fastapi import Depends, File
 from .. import models, schemas, oauth2
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from ..database import get_db
 from typing import List, Optional
+import cloudinary
+import cloudinary.uploader
+from ..database import get_db
 
 router = APIRouter(
     prefix="/events",
+    
     tags=["Events"]
 )
 
-@router.get("/", response_model= List[schemas.EventOut])
-def get_events(db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user),
+@router.get("/", response_model= List[schemas.EventOut]) 
+def get_my_events(db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user),
 limit: int = 10, skip: int = 0, search: Optional[str]=""):
 
     print(current_user)
@@ -38,34 +42,29 @@ def get_all_events(db: Session = Depends(get_db), limit: int = 10, skip: int = 0
     
     return events
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model= schemas.EventResponse)
-def create_event(event: schemas.EventCreate , db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user)):
-    # cursor.execute("""INSERT INTO posts(title, content, published) 
-    #                 VALUES(%s, %s, %s) RETURNING * """,
-    #                 (post.title, post.content, post.published))
-    # new_post = cursor.fetchone() 
 
-    # conn.commit() 
-    # print(current_user.id)
-    # print(current_user.email)
-    print(current_user)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model= schemas.EventResponse)
+def create_event(file: UploadFile = File(...), event: schemas.EventCreate = Depends(schemas.EventCreate.as_form),
+ db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user)):
+    try:
+        event_image = cloudinary.uploader.upload(file.file)
+        url = event_image.get("url")
+        event.image_url = url
+
+    except Exception as e:
+        pass
+    
+    # print(current_user)
     new_event = models.Event(owner_id = current_user.id, **event.dict())
     db.add(new_event)
     db.commit()
     db.refresh(new_event)
 
     return new_event
- 
- 
-# @app.get("/posts/latest")
-# def get_latest_post():
-#     post = my_posts[len(my_posts)-1 ]
-#     print(post)
-#     return post
-
 
 @router.get("/{id}", response_model= schemas.EventOut)
-def get_event(id: int, db: Session = Depends(get_db), limit: int = 10, skip: int = 0, search: Optional[str]=""):
+def get_an_event(id: int, db: Session = Depends(get_db), 
+limit: int = 10, skip: int = 0, search: Optional[str]=""):
 
     # event = db.query(models.Event).filter(models.Event.id == id).first()
 
@@ -96,7 +95,7 @@ def delete_event(id: int, db: Session = Depends(get_db), current_user: str = Dep
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                              detail = f"Event with id: {id} was not found")
 
-    if deleted.owner_id != current_user.id:
+    if deleted.owner_id != current_user.id or current_user.admin == False:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
         detail="Not authorized to perform requested action")
 
@@ -107,7 +106,9 @@ def delete_event(id: int, db: Session = Depends(get_db), current_user: str = Dep
    
 
 @router.put("/{id}", response_model= schemas.EventResponse)
-def update_event(id: int, event: schemas.EventCreate , db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user)):
+def update_event(id: int, file: UploadFile = File(...), 
+event: schemas.EventUpdate = Depends(schemas.EventUpdate.as_form),
+db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user)):
 
     # cursor.execute( 
     #     """UPDATE posts SET title = %s, content = %s, published = %s WHERE ID = %s RETURNING *""",
@@ -124,9 +125,19 @@ def update_event(id: int, event: schemas.EventCreate , db: Session = Depends(get
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                     detail = f"Event with id: {id} was not found")
 
-    if updated_event.owner_id != current_user.id:
+    if updated_event.owner_id != current_user.id or current_user.admin == False:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
         detail="Not authorized to perform requested action")
+
+    if file:
+        try:
+            event_image = cloudinary.uploader.upload(file.file)
+            url = event_image.get("url")
+            event.image_url = url
+        except Exception as e:
+            pass
+    else:
+        event.image_url = None
 
     event_query.update(event.dict(), synchronize_session=False)
 

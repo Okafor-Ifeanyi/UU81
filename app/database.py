@@ -5,14 +5,15 @@ from .config import settings
 import cloudinary
 
 cloudinary.config(
-    cloud_name = settings.CLOUD_NAME,
-    api_key = settings.CLOUDINARY_API_KEY,
-    api_secret = settings.CLOUDINARY_API_SECRET
+    cloud_name = settings.cloud_name,
+    api_key = settings.cloudinary_api_key,
+    api_secret = settings.cloudinary_api_secret
 )
 
 SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}'
 
 # SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}'
+
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL) 
 
