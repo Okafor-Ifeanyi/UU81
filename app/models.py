@@ -38,7 +38,7 @@ class User(Base):
     email = Column(EmailType, nullable=False, unique=True)
     first_name = Column(String)
     last_name = Column(String)
-    image_url = Column(URLType, nullable=True, default= "default.jpg")
+    # image_url = Column(URLType, nullable=True, default= "default.jpg")
     password = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), 
                     nullable=False, server_default=text('now()'))
