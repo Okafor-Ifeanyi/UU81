@@ -8,7 +8,7 @@ import pytest
 
 def test_create_user(client):
     res = client.post(
-        "/users/", json={"email": "hello123@gmail.com", "password": "password123", "phone_number": "99874"})
+        "/users/test_only/", json={"email": "hello123@gmail.com", "password": "password123", "phone_number": "99874"})
     print(res.json())
     new_user = schemas.UserOut(**res.json())
     assert new_user.email == "hello123@gmail.com"

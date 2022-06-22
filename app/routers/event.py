@@ -46,14 +46,22 @@ def get_all_events(db: Session = Depends(get_db), limit: int = 10, skip: int = 0
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model= schemas.EventResponse)
 def create_event(file: UploadFile = File(...), event: schemas.EventCreate = Depends(schemas.EventCreate.as_form),
  db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user)):
+    
     try:
         event_image = cloudinary.uploader.upload(file.file)
         url = event_image.get("url")
         event.image_url = url
-
     except Exception as e:
-        pass
-    
+        template = f"""
+                    <html>
+                        <body style="margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif;">
+                            <img src="/app/routers/templates/static/profile_male.jpg">
+                        </body>
+                    </html>
+                    """
+
+        file = template
+        
     # print(current_user)
     new_event = models.Event(owner_id = current_user.id, **event.dict())
     db.add(new_event)
@@ -106,7 +114,7 @@ def delete_event(id: int, db: Session = Depends(get_db), current_user: str = Dep
    
 
 @router.put("/{id}", response_model= schemas.EventResponse)
-def update_event(id: int, file: UploadFile = File(...), 
+def update_event(id: int, file: UploadFile = File(None), 
 event: schemas.EventUpdate = Depends(schemas.EventUpdate.as_form),
 db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user)):
 
@@ -138,6 +146,7 @@ db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_us
             pass
     else:
         event.image_url = None
+        pass
 
     event_query.update(event.dict(), synchronize_session=False)
 

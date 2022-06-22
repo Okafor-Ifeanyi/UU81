@@ -36,10 +36,13 @@ class EventUpdate(BaseModel):
 class UserOut(BaseModel):
     id: int
     email: EmailStr
+    image_url: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
     phone_number: int
+    admin: Optional[bool] = False
+    is_host: Optional[bool] = False
     created_at: datetime
-    admin: bool = False
-    is_host: bool = False
     
 
     class Config:
@@ -70,19 +73,41 @@ class BookingResponse(BaseModel):
     class Config:
         orm_mode = True
 
+
 class UserBase(BaseModel):
     email: EmailStr
     password: str
+    image_url: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
     phone_number: int
-    admin: bool = False
-    is_host: bool = False
+    admin: Optional[bool] = False
+    is_host: Optional[bool] = False
 
-class UserCreate(UserBase):
-    pass
+@as_form
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str
+    image_url: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
+    phone_number: int
+    admin: Optional[bool] = False
+    is_host: Optional[bool] = False
 
+class UserTest(UserBase):
+   pass
+
+@as_form
 class UserUpdate(BaseModel):
-    admin: bool
-    is_host: bool 
+    password: Optional[str]
+    image_url: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
+    phone_number: Optional[int]
+
+    # for name, value in UserUpdate:
+    #     return name
 
 class UserResponse(UserBase):
     id: int

@@ -1,4 +1,3 @@
-from email.policy import default
 from sqlalchemy import TIMESTAMP, Column, Float, Integer, String, Boolean, ForeignKey
 from itsdangerous import TimedSerializer as Serializer
 from sqlalchemy_utils import EmailType, URLType
@@ -17,7 +16,7 @@ class Event(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
-    image_url = Column(URLType, nullable=True, default= "default.jpg")
+    image_url = Column(URLType, nullable=True)
     space_allowed = Column(Integer, nullable=False)
     space_available = Column(Integer, nullable=False)
     cost = Column(Float, nullable=False)
@@ -38,7 +37,7 @@ class User(Base):
     email = Column(EmailType, nullable=False, unique=True)
     first_name = Column(String)
     last_name = Column(String)
-    # image_url = Column(URLType, nullable=True, default= "default.jpg")
+    image_url = Column(URLType, nullable=True)
     password = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), 
                     nullable=False, server_default=text('now()'))

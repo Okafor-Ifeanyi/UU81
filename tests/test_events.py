@@ -51,10 +51,10 @@ def test_get_one_event(client, test_events):
 
     assert res.status_code == 200
 
-@pytest.mark.parametrize("title, content, status", [ 
-    ("Dope title", "awesome new content", True),
-    ("Favorite Pizza", "I love pepporoni", False),
-    ("tallest skyscrapper", "I just want the money", True)
+@pytest.mark.parametrize("title, content, status, image_url", [ 
+    ("Dope title", "awesome new content", True, "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg"),
+    ("Favorite Pizza", "I love pepporoni", False, "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg"),
+    ("tallest skyscrapper", "I just want the money", True, "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg")
 ])
 
 

@@ -44,6 +44,7 @@ def session():
     finally: 
         db.close()
 
+
 @pytest.fixture()
 def client(session):
     def override_get_db():
@@ -56,13 +57,17 @@ def client(session):
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
 
+
 @pytest.fixture
 def test_user(client):
     user_data = {"email": "hello123@gmail.com", 
                 "password": "password123",
+                "image_url": "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg",
                 "phone_number": "5542",
-                "admin": "true"}
-    res = client.post("/users/", json=user_data)
+                "admin": "False",
+                "is_host": "False"
+                }
+    res = client.post("/users/test_only/", json=user_data)
 
     assert res.status_code == 201
     print(res.json())
@@ -89,9 +94,10 @@ def authorized_client(client, token):
 def test_user_2(client):
     user_data = {"email": "zeus@gmail.com", 
                     "password": "password123",
+                    "image_url": "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg",
                     "phone_number": "5542", 
                     "admin": "False"}
-    res = client.post("/users/", json=user_data)
+    res = client.post("/users/test_only/", json=user_data)
 
     assert res.status_code == 201
     print(res.json())
@@ -118,6 +124,7 @@ def test_events(test_user, session, test_user_2):
     events_data = [{
         "title": "Checking out an event",
         "content": "Lets see how it goes",
+        "image_url": "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg",
         "space_allowed": 50,
         "space_available": 20,
         "cost": 2000,
@@ -125,6 +132,7 @@ def test_events(test_user, session, test_user_2):
     },{
         "title": "Checking out the 2nd Event",
         "content": "See how it goes",
+        "image_url": "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg",
         "space_allowed": 50,
         "space_available": 20,
         "cost": 2000,
@@ -132,6 +140,7 @@ def test_events(test_user, session, test_user_2):
     }, {
         "title": "Checking out the 3rd Event",
         "content": "How it goes",
+        "image_url": "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg",
         "space_allowed": 50,
         "space_available": 20,
         "cost": 2000,
@@ -139,6 +148,7 @@ def test_events(test_user, session, test_user_2):
     },{
         "title": "Checking out the 4th Event",
         "content": "How it goes",
+        "image_url": "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg",
         "space_allowed": 50,
         "space_available": 20,
         "cost": 2000,
