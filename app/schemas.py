@@ -29,8 +29,8 @@ class EventCreate(BaseModel):
 
 @as_form
 class EventUpdate(BaseModel):
-    title: str
-    content: str
+    title: Optional[str]
+    content: Optional[str]
     image_url: Optional[str]
 
 class UserOut(BaseModel):
