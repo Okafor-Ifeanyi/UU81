@@ -73,8 +73,7 @@ def book_event(book: schemas.Booking, db: Session =Depends(database.get_db),
         new_book = models.Booking(event_id = book.event_id, user_id = current_user.id, space = book.space)
         db.add(new_book)
         db.commit()
-
-        # 
+        
         return {"message": "Successfully added to your bookings"}
 
     else:

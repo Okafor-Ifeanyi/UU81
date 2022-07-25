@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 import cloudinary
 import cloudinary.uploader
 from ..database import get_db
+from typing import Optional, List
 
 
 router = APIRouter(
@@ -29,9 +30,9 @@ def create_user(file: UploadFile = File(None), user: schemas.UserCreate = Depend
     except Exception as e:
         pass
 
-    # email = db.query(models.User).filter(models.User.email == user.email)
+    email = db.query(models.User).filter(models.User.email == user.email)
 
-    # found_email = email.first()
+    found_email = email.first()
 
     # if found_email:
     #     raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,
@@ -39,6 +40,9 @@ def create_user(file: UploadFile = File(None), user: schemas.UserCreate = Depend
 
     # Create new user with data provided on the form
     new_user = models.User(**user.dict())
+    if user.email == found_email:
+        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                    detail = f"{user.email} has already been registered")
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -46,6 +50,19 @@ def create_user(file: UploadFile = File(None), user: schemas.UserCreate = Depend
     # Return created user shown in schema format
     return new_user 
 
+@router.get("/all", response_model= List[schemas.UserOut])
+def get_user(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user),
+limit: int = 10, skip: int = 0, search: Optional[str]=""):
+
+    # Get all users
+    users = db.query(models.User).filter(models.User.email.contains(search)).limit(limit).offset(skip).all()
+
+    if current_user.admin == True:
+        return users
+    else:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail = f"User with email: {current_user.email} is not an admin")
+    
 
 @router.get("/{id}", response_model=schemas.UserOut)
 def get_user(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
@@ -146,6 +163,9 @@ db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_us
     else:
         user.last_name = current_user.last_name
 
+# @router.get("/all", response_model= List[schemas.EventOut])
+# def get_all_events(db: Session = Depends(get_db), limit: int = 10, skip: int = 0, search: Optional[str]=""):
+
 
 # I tried creating a loop to call the function above automatically
 # but it happens that the "user" cant make use of the "name" value i assigned 
@@ -171,6 +191,7 @@ db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_us
     user_query.update(user.dict(), synchronize_session=False)
     db.commit()
     return user_query.first()
+
 
 
 # Test Routers

@@ -59,10 +59,10 @@ def create_event(file: UploadFile = File(...), event: schemas.EventCreate = Depe
         pass
         
     # Create new event with data provided on the form
-    new_event = models.Event(owner_id = current_user.id, **event.dict())
-    db.add(new_event)
-    db.commit()
-    db.refresh(new_event)
+    new_event = models.Event(owner_id = current_user.id, **event.dict()) 
+    db.add(new_event) 
+    db.commit() 
+    db.refresh(new_event) 
 
     # Return created event shown in schema format
     return new_event
