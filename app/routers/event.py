@@ -100,16 +100,16 @@ def delete_event(id: int, db: Session = Depends(get_db), current_user: str = Dep
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                              detail = f"Event with id: {id} was not found")
 
+    if deleted.owner_id == current_user.id or current_user.admin == True:
+    # Delete Event 
+        deleted_event_query.delete(synchronize_session=False)
+        db.commit()
+            
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
     # Report 403 if user is not the Owner or an Admin, 1 of any is enough to pass this statement
-    if deleted.owner_id != current_user.id or deleted.owner.admin != True:
+    else:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
         detail="Not authorized to perform requested action")
-
-    # Delete Event 
-    deleted_event_query.delete(synchronize_session=False)
-    db.commit()
-        
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
    
 
 @router.put("/{id}", response_model= schemas.EventResponse)
@@ -126,11 +126,7 @@ db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_us
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                     detail = f"Event with id: {id} was not found")
 
-    # Report 403 if user is not the Owner or an Admin, 1 of any is enough to pass this statement
-    if updated_event.owner_id != current_user.id or updated_event.owner.admin != True:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
-        detail="Not authorized to perform requested action")
-
+    
     # If file is available upload to cloudinary then save the link into the "image model"
     if file:
         try:
@@ -159,7 +155,12 @@ db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_us
     else:
         event.image_url = updated_event.image_url
 
-    # Update Event
-    event_query.update(event.dict(), synchronize_session=False)
-    db.commit()
-    return event_query.first()
+    if updated_event.owner_id == current_user.id or current_user.admin == True:
+        # Update Event
+        event_query.update(event.dict(), synchronize_session=False)
+        db.commit()
+        return event_query.first()
+    # Report 403 if user is not the Owner or an Admin, 1 of any is enough to pass this statement
+    else:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
+        detail="Not authorized to perform requested action")

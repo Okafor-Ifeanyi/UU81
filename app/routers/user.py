@@ -8,12 +8,10 @@ import cloudinary.uploader
 from ..database import get_db
 from typing import Optional, List
 
-
 router = APIRouter(
     prefix= "/users",
     tags=["Users"]
 )
-
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
 def create_user(file: UploadFile = File(None), user: schemas.UserCreate = Depends(schemas.UserCreate.as_form), db: Session = Depends(get_db)):
@@ -91,14 +89,13 @@ def delete_user(id:int, db: Session = Depends(get_db), current_user: int = Depen
                             detail= f"User with id: {id} was not found")
     
     # Report 403 if user is not the Owner or an Admin, 1 of any is enough to pass this statement
-    if current_user.admin == False or id != current_user.id:
+    if current_user.admin == True or current_user.id == id:
+        deleted_user_query.delete(synchronize_session=False)
+        db.commit()             
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
+    else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail = f"User with id: {id} is not the Owner or Admin")
-
-    # Delete user
-    deleted_user_query.delete(synchronize_session=False)
-    db.commit()             
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+                    detail = f"User with email: {current_user.email} is the Owner or an Admin")
 
 
 @router.put("/{id}", response_model=schemas.UserOut)
@@ -116,10 +113,7 @@ db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_us
                     detail = f"User with id: {id} was not found")
 
     # Report 403 if user is not the Owner or an Admin, 1 of any is enough to pass this statement
-    if current_user.admin != True or id != current_user.id:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail = f"User email {current_user.email}: is not an Admin or the Owner of this Account")
-
+    
     # If file is available upload to cloudinary then save the link into the "image model"
     if file:
         try:
@@ -188,9 +182,13 @@ db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_us
 
     #     print(name)
     
-    user_query.update(user.dict(), synchronize_session=False)
-    db.commit()
-    return user_query.first()
+    if current_user.admin == True or id == current_user.id:  
+        user_query.update(user.dict(), synchronize_session=False)
+        db.commit()
+        return user_query.first()
+    else:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail = f"User email {current_user.email}: is not an Admin or the Owner of this Account")
 
 
 

@@ -37,9 +37,7 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session =
     # Return JWT token and type
     return {"access_token": access_token, "token_type": "bearer"}
 
-
-
-   
+    
 
 @router.post('/reset_password', response_model=schemas.TokenReset)
 async def request_reset(reset_request: schemas.RequestReset, db: Session = Depends(get_db)):
