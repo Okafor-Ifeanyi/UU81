@@ -8,7 +8,7 @@ from .database import Base
 from .config import settings
 from .paystack import PayStack
 import secrets
-
+import re
 
 class Event(Base):
     __tablename__ = "events"
@@ -41,7 +41,7 @@ class User(Base):
     password = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), 
                     nullable=False, server_default=text('now()'))
-    phone_number = Column(Integer, nullable=False)
+    phone_number = Column(String, nullable=False)
     admin = Column(Boolean, nullable=False)
     is_host = Column(Boolean, server_default='FALSE', nullable=False)
 

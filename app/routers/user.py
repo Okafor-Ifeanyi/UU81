@@ -20,6 +20,10 @@ def create_user(file: UploadFile = File(None), user: schemas.UserCreate = Depend
     hashed_password = utils.hash(user.password)
     user.password = hashed_password
 
+    # verify number
+    valid_number = utils.phone_number(user.phone_number)
+    user.phone_number = valid_number
+
     # Upload file to Cloudinary and save link to "Image_url Model"
     try:
         user_image = cloudinary.uploader.upload(file.file)
@@ -92,7 +96,8 @@ def delete_user(id:int, db: Session = Depends(get_db), current_user: int = Depen
     if current_user.admin == True or current_user.id == id:
         deleted_user_query.delete(synchronize_session=False)
         db.commit()             
-        return Response(status_code=status.HTTP_204_NO_CONTENT)
+        return {"message": "Successfully deleted",
+                "status code": Response(status_code=status.HTTP_204_NO_CONTENT)}
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                     detail = f"User with email: {current_user.email} is the Owner or an Admin")
@@ -136,26 +141,31 @@ db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_us
         except:
             pass
     else:
-        user.password = current_user.password
+        user.password = updated_user.password
     if user.phone_number:
-        pass
+        try:
+            # verify number
+            valid_number = utils.phone_number(user.phone_number)
+            user.phone_number = valid_number
+        except:
+            pass
     else: 
-        user.phone_number = current_user.phone_number
+        user.phone_number = updated_user.phone_number
 
     if user.image_url:
         pass
     else:
-        user.image_url = current_user.image_url
+        user.image_url = updated_user.image_url
 
     if user.first_name:
         pass
     else:
-        user.first_name = current_user.first_name
+        user.first_name = updated_user.first_name
 
     if user.last_name:
         pass
     else:
-        user.last_name = current_user.last_name
+        user.last_name = updated_user.last_name
 
 # @router.get("/all", response_model= List[schemas.EventOut])
 # def get_all_events(db: Session = Depends(get_db), limit: int = 10, skip: int = 0, search: Optional[str]=""):

@@ -39,7 +39,7 @@ class UserOut(BaseModel):
     image_url: Optional[str]
     first_name: Optional[str]
     last_name: Optional[str]
-    phone_number: int
+    phone_number: str
     admin: Optional[bool] = False
     is_host: Optional[bool] = False
     created_at: datetime
@@ -80,7 +80,7 @@ class UserBase(BaseModel):
     image_url: Optional[str]
     first_name: Optional[str]
     last_name: Optional[str]
-    phone_number: int
+    phone_number: str
     admin: Optional[bool] = False
     is_host: Optional[bool] = False
 
@@ -91,7 +91,7 @@ class UserCreate(BaseModel):
     image_url: Optional[str]
     first_name: Optional[str]
     last_name: Optional[str]
-    phone_number: int
+    phone_number: str
     admin: Optional[bool] = False
     is_host: Optional[bool] = False
 
@@ -104,7 +104,7 @@ class UserUpdate(BaseModel):
     image_url: Optional[str]
     first_name: Optional[str]
     last_name: Optional[str]
-    phone_number: Optional[int]
+    phone_number: Optional[str]
 
     # for name, value in UserUpdate:
     #     return name
