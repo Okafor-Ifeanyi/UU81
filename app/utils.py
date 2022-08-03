@@ -5,7 +5,7 @@ import re
 
 pwd_content = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-def hash(password: str):
+def hash(password: str): # Prog-BIO
     return pwd_content.hash(password)
 
 def verify(plain_password, hashed_password):

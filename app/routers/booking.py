@@ -77,7 +77,7 @@ def book_event(book: schemas.Booking, db: Session =Depends(database.get_db),
         return {"message": "Successfully added to your bookings"}
 
     else:
-        # Report status code 404 if booking not found
+        # Report status code 404 if booking not found # Prog_BIO
         if not found_booking:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Booking not found")
 
@@ -101,4 +101,4 @@ def get_booking(id: int, db: Session = Depends(get_db),
                     detail = f"Booking with id: {id} was not found")
 
     # Return booking
-    return booking
+    retu

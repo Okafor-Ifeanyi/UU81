@@ -18,7 +18,7 @@ def create_access_token(data: dict):
     to_encode = data.copy()
 
     expire = datetime.utcnow() + timedelta(minutes=EXPIRATION_DATE)
-    to_encode.update({"exp": expire})
+    to_encode.update({"exp": expire}) # Prog-BIO
 
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
@@ -49,7 +49,7 @@ def get_current_user(token: str = Depends(oauth_scheme), db: Session = Depends(g
         detail=f"could not validate credentials", 
         headers={"WWW-Authenticate": "Bearer"})
 
-    token = verify_access_token(token, credentials_exception)
+    token = verify_access_token(token, credentials_exception) 
 
     user = db.query(models.User).filter(models.User.id == token.id).first()
 
