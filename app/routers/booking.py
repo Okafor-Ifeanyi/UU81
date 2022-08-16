@@ -101,4 +101,4 @@ def get_booking(id: int, db: Session = Depends(get_db),
                     detail = f"Booking with id: {id} was not found")
 
     # Return booking
-    retu
+    return booking

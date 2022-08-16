@@ -37,7 +37,7 @@ async def send_reset_email(email: List) -> JSONResponse:
                         <br>
                         <a style=" padding: 0.5rem; border-radius: 0.5rem; font-size: 0.8rem; 
                         text-decoration: arial; background: #ee88ee; color: white;" 
-                        href="https://uu81.herokuapp.com/docs#/Authentication/reset_token_reset_password_UU81_post">
+                        href="https://uu81.vercel.app/change_password">
                             Verify your email
                         <a>
                     
