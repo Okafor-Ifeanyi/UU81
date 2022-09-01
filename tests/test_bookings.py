@@ -52,14 +52,14 @@ def test_get_booking(authorized_client, test_events, test_user):
 
 #     assert res.status_code == 200
 
-# def test_get_one_event(client, test_events):
-#     res = client.get(f"/events/{test_events[0].id}")
-#     print(res.json())
-#     event = schemas.EventOut(**res.json())
-#     assert event.Event.id ==test_events[0].id
-#     assert event.Event.title ==test_events[0].title
+def test_get_one_event(client, test_events):
+    res = client.get(f"/events/{test_events[0].id}")
+    print(res.json())
+    event = schemas.EventOut(**res.json())
+    assert event.Event.id ==test_events[0].id
+    assert event.Event.title ==test_events[0].title
 
-#     assert res.status_code == 200
+    assert res.status_code == 200
 
 # def test_get_user_bookings(authorized_client, test_bookings, test_events, test_user, test_user_2):
 #     res = authorized_client.get("/bookings/user")
