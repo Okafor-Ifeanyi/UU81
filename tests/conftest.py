@@ -13,7 +13,7 @@ from alembic import command
 
 
 SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test'
-
+# print(SQLALCHEMY_DATABASE_URL)
 # SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}'
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
@@ -62,12 +62,10 @@ def client(session):
 def test_user(client):
     user_data = {"email": "hello123@gmail.com", 
                 "password": "password123",
-                "image_url": "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg",
                 "phone_number": "5542",
-                "admin": "False",
-                "is_host": "False"
+                "admin": "True",
                 }
-    res = client.post("/users/test_only/", json=user_data)
+    res = client.post("/users/test_only", json=user_data)
 
     assert res.status_code == 201
     print(res.json())
@@ -94,10 +92,9 @@ def authorized_client(client, token):
 def test_user_2(client):
     user_data = {"email": "zeus@gmail.com", 
                     "password": "password123",
-                    "image_url": "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg",
-                    "phone_number": "5542", 
-                    "admin": "False"}
-    res = client.post("/users/test_only/", json=user_data)
+                    "phone_number": "5542"
+                    }
+    res = client.post("/users/test_only", json=user_data)
 
     assert res.status_code == 201
     print(res.json())
@@ -132,7 +129,7 @@ def test_events(test_user, session, test_user_2):
     },{
         "title": "Checking out the 2nd Event",
         "content": "See how it goes",
-        "image_url": "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg",
+        # "image_url": "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg",
         "space_allowed": 50,
         "space_available": 20,
         "cost": 2000,
@@ -140,7 +137,7 @@ def test_events(test_user, session, test_user_2):
     }, {
         "title": "Checking out the 3rd Event",
         "content": "How it goes",
-        "image_url": "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg",
+        # "image_url": "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg",
         "space_allowed": 50,
         "space_available": 20,
         "cost": 2000,
@@ -148,7 +145,7 @@ def test_events(test_user, session, test_user_2):
     },{
         "title": "Checking out the 4th Event",
         "content": "How it goes",
-        "image_url": "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg",
+        # "image_url": "http://res.cloudinary.com/prog-bio/image/upload/v1655657195/h6ovwbxsrcujbclg8w1v.jpg",
         "space_allowed": 50,
         "space_available": 20,
         "cost": 2000,
@@ -227,4 +224,5 @@ def test_bookings(session, test_events, test_user, test_user_2):
 
     bookings = session.query(models.Booking).all()
     return bookings
+
 

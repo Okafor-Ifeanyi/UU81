@@ -33,6 +33,9 @@ class EventUpdate(BaseModel):
     content: Optional[str]
     image_url: Optional[str]
 
+class EventTest(EventBase):
+    pass
+
 class UserOut(BaseModel):
     id: int
     email: EmailStr

@@ -32,7 +32,7 @@ limit: int = 10, skip: int = 0, search: Optional[str]=""):
 @router.get("/all", response_model= List[schemas.EventOut])
 def get_all_events(db: Session = Depends(get_db), limit: int = 10, skip: int = 0, search: Optional[str]=""):
     
-    # Get all Event with id provided, including options to make search more efficient
+    # Get all Event, including options to make search more efficient
     events = db.query(models.Event, func.count(models.Booking.event_id).label("Booking")).join( 
         models.Booking, models.Booking.event_id == models.Event.id, isouter=True).group_by(
         models.Event.id).filter(models.Event.title.contains(search)).limit(limit).offset(skip).all()
@@ -164,3 +164,48 @@ db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_us
     else:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
         detail="Not authorized to perform requested action")
+
+@router.post("/test", status_code=status.HTTP_201_CREATED, response_model= schemas.EventResponse)
+def create_posts(event: schemas.EventTest, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+    # cursor.execute("""INSERT INTO posts(title, content, published) 
+    #                 VALUES(%s, %s, %s) RETURNING * """,
+    #                 (post.title, post.content, post.published))
+    # new_post = cursor.fetchone() 
+
+    # conn.commit()
+    print(current_user.id)
+    # print(current_user.email)
+    new_event = models.Event(owner_id=current_user.id, **event.dict())
+    db.add(new_event)
+    db.commit()
+    db.refresh(new_event)
+
+    return new_event
+
+@router.put("/test/{id}", response_model= schemas.EventResponse)
+def update_post(id: int, event: schemas.EventTest , db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+
+    # cursor.execute( 
+    #     """UPDATE posts SET title = %s, content = %s, published = %s WHERE ID = %s RETURNING *""",
+    #     (post.title, post.content, post.published, str),)
+    # updated_post = cursor.fetchone()
+    # conn.commit()
+    print(current_user)
+    event_query = db.query(models.Event).filter(models.Event.id == id)
+
+    updated_event = event_query.first()
+
+    if updated_event == None :
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                    detail = f"Post with id: {id} was not found")
+
+    if updated_event.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
+        detail="Not authorized to perform requested action")
+
+
+    event_query.update(event.dict(), synchronize_session=False)
+
+    db.commit()
+
+    return event_query.first()

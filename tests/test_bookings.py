@@ -36,11 +36,13 @@ def test_booking_non_exist(client, test_events):
     assert res.status_code == 401
 
 def test_get_booking(authorized_client, test_events, test_user):
-    res = authorized_client.post(
-        "/bookings/events", json={"event_id": test_events[1].id})
+    res = authorized_client.get(
+        f"/bookings/events/{test_events[0].id}")
+
+    print(test_events[1].id)
     assert res.status_code == 200
 
-# def test_get_one_booking(authorized_client, test_bookings):
+# def test_get_one_booking(authorized_client, test_bokings):
 #     res = authorized_client.get(f"/bookings/{test_bookings[1].id}")
     
 #     # booking = schemas.BookingResponse(**res.json())
