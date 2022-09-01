@@ -7,19 +7,19 @@ jobs:
     environment:
       name: uu81_fastapi
     env:
-      # DATABASE_HOSTNAME: ${{secrets.DATABASE_HOSTNAME}}
-      # DATABASE_PORT: ${{secrets.DATABASE_PORT}}
-      # DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
-      # DATABASE_NAME: ${{secrets.DATABASE_NAME}}
-      # DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
-      DATABASE_HOSTNAME: localhost
-      DATABASE_PORT: 5432
-      DATABASE_PASSWORD: Ifeanyi058
-      DATABASE_NAME: UU81
-      DATABASE_USERNAME: postgres
+      DATABASE_HOSTNAME: ${{secrets.DATABASE_HOSTNAME}}
+      DATABASE_PORT: ${{secrets.DATABASE_PORT}}
+      DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+      DATABASE_NAME: ${{secrets.DATABASE_NAME}}
+      DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
+      # DATABASE_HOSTNAME: localhost
+      # DATABASE_PORT: 5432
+      # DATABASE_PASSWORD: Ifeanyi058
+      # DATABASE_NAME: UU81
+      # DATABASE_USERNAME: postgres
       SECRET_KEY: ${{secrets.DATABASE_SECRET_KEY}}
-      # ALGORITHM: ${{secrets.DATABASE_ALGORITHM}}
-      ALGORITHM: HS256
+      ALGORITHM: ${{secrets.DATABASE_ALGORITHM}}
+      # ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
       PAYSTACK_SECRET_KEY: ${{secrets.DATABASE_PAYSTACK_SECRET_KEY}}
       MAIL_USERNAME: ${{secrets.MAIL_USERNAME}}
@@ -66,3 +66,19 @@ jobs:
         run: |
           pip install pytest
           pytest 
+          
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build]
+    environment:
+      name: production_fastapi
+
+    steps:
+      - name: pulling git repo
+        uses: actions/checkout@v2
+      - name: deploying to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12 
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+          heroku_email: ${{secrets.HEROKU_EMAIL}}

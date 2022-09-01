@@ -17,7 +17,7 @@ def create_access_token(data: dict):
     to_encode = data.copy()
 
     expire = datetime.utcnow() + timedelta(minutes=EXPIRATION_DATE)
-    to_encode.update({"exp": expire}) # Prog-BIO
+    to_encode.update({"exp": expire}) # (Prog-BIO)
 
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
