@@ -66,12 +66,12 @@ jobs:
         run: |
           pip install pytest
           pytest 
-          
+
   deploy:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [GOD_ABEG]
     environment:
-      name: production_fastapi
+      name: production_uu81
 
     steps:
       - name: pulling git repo
