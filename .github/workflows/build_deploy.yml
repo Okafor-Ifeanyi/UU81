@@ -3,7 +3,7 @@ name: Build and Deploy Code
 on: [push, pull_request]
 
 jobs:
-  job1:
+  job2:
     environment:
       name: uu81_fastapi
     env:
