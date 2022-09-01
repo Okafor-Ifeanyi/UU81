@@ -3,7 +3,7 @@ name: Build and Deploy Code
 on: [push, pull_request]
 
 jobs:
-  job2:
+  GOD_ABEG:
     environment:
       name: uu81_fastapi
     env:
@@ -18,7 +18,8 @@ jobs:
       DATABASE_NAME: UU81
       DATABASE_USERNAME: postgres
       SECRET_KEY: ${{secrets.DATABASE_SECRET_KEY}}
-      ALGORITHM: ${{secrets.DATABASE_ALGORITHM}}
+      # ALGORITHM: ${{secrets.DATABASE_ALGORITHM}}
+      ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
       PAYSTACK_SECRET_KEY: ${{secrets.DATABASE_PAYSTACK_SECRET_KEY}}
       MAIL_USERNAME: ${{secrets.MAIL_USERNAME}}
