@@ -14,7 +14,7 @@ SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.
 
 # Prog-BIO
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL) 
+engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_size=10, max_overflow=20) 
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
