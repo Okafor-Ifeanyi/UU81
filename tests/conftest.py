@@ -12,8 +12,8 @@ from alembic import command
 
 
 
-# SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test'
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:Ifeanyi058@localhost:5433/UU81_test"
+SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test'
+# SQLALCHEMY_DATABASE_URL = "postgresql://postgres:Ifeanyi058@localhost/UU81_test"
 # SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}'
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
@@ -75,7 +75,6 @@ def test_user(client):
 
 @pytest.fixture
 def token(test_user):
-    print(test_user)
     access_token = create_access_token({"user_id": test_user['id'], "admin": test_user['admin']})
     return access_token
 
