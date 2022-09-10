@@ -67,16 +67,8 @@ async def request_reset(reset_request: schemas.RequestReset, db: Session = Depen
 
 @router.post('/reset_password/UU81')
 def reset_token(reset_password: schemas.ResetPassword, token: str, db: Session = Depends(get_db)):
-    
-    # Verify user
-    verified_user = oauth2.verify_access_reset_token(token)
-    if verified_user:
-        pass
-    else:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                            detail= f"Invalid Credentials") 
 
-    # Get reset user
+    # Verify and Get reset user
     user = oauth2.get_reset_user(token)
         
     # Cross-check the password, hash it and if it doesnt match
