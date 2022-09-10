@@ -141,7 +141,7 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     id: Optional[str] = None
     admin: Optional[bool] = None
-    email: Optional[str] = None
+    # email: Optional[str] = None
 
 class TokenReset(BaseModel):
     message: str

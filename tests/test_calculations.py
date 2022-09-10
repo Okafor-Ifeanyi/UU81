@@ -1,5 +1,4 @@
 import pytest
-from sqlalchemy import BLANK_SCHEMA
 from app.calculations import add, subtract, multiply, divide, BankAccount
 
 @pytest.fixture
