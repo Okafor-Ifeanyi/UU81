@@ -63,10 +63,10 @@ def verify_access_reset_token(token: str, credentials_exception):
 
         email: str = payload.get("user_email")
         
-
         if email is None:
-            return "stop"
-        token_data = schemas.TokenData(email=email)
+            raise credentials_exception
+            
+        token_data = email
 
     except JWTError:
         raise HTTPException(
@@ -85,6 +85,6 @@ def get_reset_user(token: str = Depends(oauth_scheme), db: Session = Depends(get
 
     token = verify_access_reset_token(token, credentials_exception)
 
-    user = db.query(models.User).filter(models.User.email == token.email).first()
+    user = db.query(models.User).filter(models.User.email == token[0]).first()
 
     return user
