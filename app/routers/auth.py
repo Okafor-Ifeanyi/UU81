@@ -69,7 +69,8 @@ async def request_reset(reset_request: schemas.RequestReset, db: Session = Depen
 def reset_token(reset_password: schemas.ResetPassword, token: str, db: Session = Depends(get_db)):
 
     # Verify and Get reset user
-    user = oauth2.get_reset_user(token)
+    token_str = f"'{token}'"
+    user = oauth2.get_reset_user(token_str)
         
     # Cross-check the password, hash it and if it doesnt match
     # report status code 406

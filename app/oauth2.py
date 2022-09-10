@@ -1,3 +1,4 @@
+from base64 import encode
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
@@ -55,36 +56,23 @@ def get_current_user(token: str = Depends(oauth_scheme), db: Session = Depends(g
     return user
 
 
-# def verify_access_reset_token(token: str, credentials_exception):
-
-#     try:
-#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-
-#         email: str = payload.get("user_email")
-
-#         if email is None:
-#             raise credentials_exception
-
-#         token_data = schemas.TokenData(id=email)
-#     except JWTError:
-#         raise credentials_exception
-
-#     return token_data
-
 def verify_access_reset_token(token: str, credentials_exception):
-
+    print(token)
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
-        id: str = payload.get("user_email")
+        email: str = payload.get("user_email")
         
 
-        if id is None:
-            raise credentials_exception
-        
-        token_data = schemas.TokenData(id=id)
+        if email is None:
+            return "stop"
+        token_data = schemas.TokenData(email=email)
+
     except JWTError:
-        raise credentials_exception
+        raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED, 
+        detail=f"could not validate credentials JWT Error", 
+        headers={"WWW-Authenticate": "Bearer"})
 
     return token_data
  
@@ -92,7 +80,7 @@ def get_reset_user(token: str = Depends(oauth_scheme), db: Session = Depends(get
 
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, 
-        detail=f"could not validate credentials", 
+        detail=f"could not validate credentials Email None", 
         headers={"WWW-Authenticate": "Bearer"})
 
     token = verify_access_reset_token(token, credentials_exception)
