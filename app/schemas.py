@@ -141,9 +141,11 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     id: Optional[str] = None
     admin: Optional[bool] = None
+    email: Optional[str] = None
 
-class TokenReset(Token):
+class TokenReset(BaseModel):
     message: str
+    token_type: str
 
 class Booking(BaseModel):
     event_id: int = None

@@ -60,11 +60,11 @@ def verify_access_reset_token(token: str, credentials_exception):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
-        id: str = payload.get("user_id")
+        email: str = payload.get("user_email")
 
-        if id is None:
+        if email is None:
             raise credentials_exception
-        token_data = schemas.TokenData(id=id)
+        token_data = schemas.TokenData(email=email)
     except JWTError:
         raise credentials_exception
 
@@ -79,6 +79,6 @@ def get_reset_user(token: str = Depends(oauth_scheme), db: Session = Depends(get
 
     token = verify_access_reset_token(token, credentials_exception)
 
-    user = db.query(models.User).filter(models.User.id == token.id).first()
+    user = db.query(models.User).filter(models.User.email == token.email).first()
 
     return user

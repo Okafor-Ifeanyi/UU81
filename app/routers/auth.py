@@ -52,7 +52,7 @@ async def request_reset(reset_request: schemas.RequestReset, db: Session = Depen
                             detail= f"Invalid Credentials") 
 
     # Create acces token with payload of user's ID
-    access_token = oauth2.create_access_token(data ={"user_id": user.id})
+    # access_token = oauth2.create_access_token(data ={"user_id": user.id})
 
     # Send Email to email address provided. 
     # "await" makes the system wait till this task is achieved
@@ -60,14 +60,25 @@ async def request_reset(reset_request: schemas.RequestReset, db: Session = Depen
  
     return {
         "message": "An email has been sent with instructions to reset your passsword", 
-        "access_token": access_token, 
-        "token_type": "bearer",
+        # "access_token": access_token, 
+        "token_type": "bearer"
     }
 
 
 @router.post('/reset_password/UU81')
-def reset_token(reset_password: schemas.ResetPassword, db: Session = Depends(get_db), reset_user: int = Depends(oauth2.get_reset_user)):
+def reset_token(reset_password: schemas.ResetPassword, token: str, db: Session = Depends(get_db)):
     
+    # Verify user
+    verified_user = oauth2.verify_access_reset_token(token)
+    if verified_user:
+        pass
+    else:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail= f"Invalid Credentials") 
+
+    # Get reset user
+    user = oauth2.get_reset_user(token)
+        
     # Cross-check the password, hash it and if it doesnt match
     # report status code 406
     if reset_password.password == reset_password.confirm_password:
@@ -79,6 +90,6 @@ def reset_token(reset_password: schemas.ResetPassword, db: Session = Depends(get
                             detail= f"Abeg Crosscheck da Password")
 
     # Reset user password
-    reset_user.password = hashed_password
+    user.password = hashed_password
     db.commit()
     return {router.url_path_for('login')} 

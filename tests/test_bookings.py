@@ -1,4 +1,3 @@
-from asyncio import new_event_loop
 import pytest
 from app import models, schemas
 
