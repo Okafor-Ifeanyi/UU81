@@ -66,11 +66,11 @@ async def request_reset(reset_request: schemas.RequestReset, db: Session = Depen
 
 
 @router.post('/reset_password/UU81')
-def reset_token(reset_password: schemas.ResetPassword, token: str, db: Session = Depends(get_db)):
-
+def reset_token(reset_password: schemas.ResetPassword, db: Session = Depends(get_db), reset_user: str = Depends(oauth2.get_reset_user)):
+     
     # Verify and Get reset user
-    token_str = f"'{token}'"
-    user = oauth2.get_reset_user(token_str)
+    # token_str = f"'{token}'"
+    # user = oauth2.get_reset_user(token)
         
     # Cross-check the password, hash it and if it doesnt match
     # report status code 406
@@ -83,6 +83,6 @@ def reset_token(reset_password: schemas.ResetPassword, token: str, db: Session =
                             detail= f"Abeg Crosscheck da Password")
 
     # Reset user password
-    user.password = hashed_password
+    reset_user.password = hashed_password
     db.commit()
-    return {router.url_path_for('login')} 
+    return {router.url_path_for('login')}

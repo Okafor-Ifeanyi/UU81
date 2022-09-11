@@ -57,7 +57,6 @@ def get_current_user(token: str = Depends(oauth_scheme), db: Session = Depends(g
 
 
 def verify_access_reset_token(token: str, credentials_exception):
-    print(token)
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
@@ -66,13 +65,9 @@ def verify_access_reset_token(token: str, credentials_exception):
         if email is None:
             raise credentials_exception
             
-        token_data = email
-
-    except JWTError:
-        raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED, 
-        detail=f"could not validate credentials JWT Error", 
-        headers={"WWW-Authenticate": "Bearer"})
+        token_data = schemas.TokenData(email=email[0])
+    except JWTError: 
+        raise credentials_exception
 
     return token_data
  
@@ -85,6 +80,6 @@ def get_reset_user(token: str = Depends(oauth_scheme), db: Session = Depends(get
 
     token = verify_access_reset_token(token, credentials_exception)
 
-    user = db.query(models.User).filter(models.User.email == token[0]).first()
+    user = db.query(models.User).filter(models.User.email == token.email).first()
 
     return user
