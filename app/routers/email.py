@@ -41,7 +41,7 @@ async def send_reset_email(email: List) -> JSONResponse:
                         <br>
                         <a style=" padding: 0.5rem; border-radius: 0.5rem; font-size: 0.8rem; 
                         text-decoration: arial; background: #ee88ee; color: white;" 
-                        href="http://uu81.vercel.app/change_password/token?token={access_token}">
+                        href="https://uu81.vercel.app/change_password/token?token={access_token}">
                             Verify your email
                         <a>
                     
